@@ -3,8 +3,6 @@ function comprarProductos() {
     let producto = " ";
     let precio = 0;
     let cantidad = 0;
-    let cuotas = 0;
-    let precioPorCuota = 0;
     let totalCompra = 0;
 let seguirComprando = false;
 
@@ -12,7 +10,6 @@ let seguirComprando = false;
     do {
         producto = prompt("Elige el producto que quieras comprar: remera, pantalon o buzo");
         cantidad = parseInt(prompt("Ingrese cantidad"));
-        cuotas = parseInt(prompt("En cuantas cuotas le gustaria pagar"));
 
         const cantidadValidada = validarCantidad(cantidad);
 
@@ -32,13 +29,12 @@ let seguirComprando = false;
                 cantidad = 0;
         }
         totalCompra += precio * cantidadValidada;
-        return totalCompra ;
-        precioPorCuota += totalCompra / cuotas;
-        return precioPorCuota
     seguirComprando = confirm ("Queres seguir comprando?");
 
     }
-    while (seguirComprando);
+    while (seguirComprando)
+
+    return totalCompra; 
 };
 
 
@@ -56,3 +52,35 @@ function validarCantidad(cantidad) {
 
 };
 
+function calcularCantidadCuotas(){
+    let cuotas = 0;
+    let elegirCuotas = false;
+
+    elegirCuotas = confirm ("Podes pagar en cuotas sin interes!!")
+
+    if (elegirCuotas){
+        cuotas = parseInt (prompt("En cuantas cuotas queres pagar?"));
+        if(cuotas===0){
+            cuotas=1;
+        } else if (Number.isNaN(cuotas)){
+            calcularCantidadCuotas();
+        }
+    }
+    else {
+        cuotas = 1;
+    }
+    return cuotas;
+}
+
+
+function calcularTotalAPagar (totalCompra, cuotas){
+let valorCuota = totalCompra / cuotas;
+alert ("El total a pagar es $"+totalCompra+" en "+cuotas+" cuotas de $"+valorCuota )
+}
+
+alert ("Bienvenidos")
+const totalCompra = comprarProductos ();
+const cuotas = calcularCantidadCuotas ();
+const valorCuota = 
+
+calcularTotalAPagar (totalCompra, cuotas)

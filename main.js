@@ -1,12 +1,12 @@
 const carrito = []
 
-// Ordenar productos de menor a mayor
+
 const ordenarMenorMayor = () => {
     productos.sort((a, b) => a.precio - b.precio)
     mostrarListaOrdenada()
 };
 
-// Ordenar productos de mayor a menor
+
 const ordenarMayorMenor = () => {
     productos.sort((a, b) => b.precio - a.precio)
     mostrarListaOrdenada()

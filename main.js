@@ -1,86 +1,109 @@
-function comprarProductos() {
+const carrito = []
 
-    let producto = " ";
-    let precio = 0;
-    let cantidad = 0;
-    let totalCompra = 0;
-let seguirComprando = false;
+// Ordenar productos de menor a mayor
+const ordenarMenorMayor = () => {
+    productos.sort((a, b) => a.precio - b.precio)
+    mostrarListaOrdenada()
+};
 
+// Ordenar productos de mayor a menor
+const ordenarMayorMenor = () => {
+    productos.sort((a, b) => b.precio - a.precio)
+    mostrarListaOrdenada()
+};
+
+const mostrarListaOrdenada = () => {
+    const listaDeProductos = productos.map(producto => {
+        return '- '+producto.nombre+' $'+producto.precio
+    })
+    alert('Lista de precios:'+'\n\n'+listaDeProductos.join('\n'))
+    comprarProductos(listaDeProductos)
+};
+
+const comprarProductos = (listaDeProductos) => {
+    let productoNombre = ''
+    let productoCantidad = 0
+    let otroProducto = false
 
     do {
-        producto = prompt("Elige el producto que quieras comprar: remera, pantalon o buzo");
-        cantidad = parseInt(prompt("Ingrese cantidad"));
+        productoNombre = prompt('¿Qué producto desea comprar?'+'\n\n'+listaDeProductos.join('\n'))
+        productoCantidad = parseInt(prompt('¿Cuántos queres comprar?'))
 
-        const cantidadValidada = validarCantidad(cantidad);
+        const producto = productos.find(producto => producto.nombre.toLowerCase() === productoNombre.toLowerCase())
 
-        switch (producto) {
-            case 'remera':
-                precio = 1000;
-                break;
-            case 'pantalon':
-                precio = 2000;
-                break;
-            case 'buzo':
-                precio = 5000;
-                break;
-            default:
-                alert("Ingrese correctamente los datos");
-                precio = 0;
-                cantidad = 0;
+        if (producto) {
+            agregarAlCarrito(producto, producto.id, productoCantidad)
+        } else {
+            alert('El producto no se encuentra en el catálogo!')
         }
-        totalCompra += precio * cantidadValidada;
-    seguirComprando = confirm ("Queres seguir comprando?");
 
+        otroProducto = confirm('Desea agregar otro producto?')
+    } while (otroProducto);
+
+    confirmarCompra()
+};
+
+const agregarAlCarrito = (producto, productoId, productoCantidad) => {
+    const productoRepetido = carrito.find(producto => producto.id === productoId)
+    if (!productoRepetido) {
+        producto.cantidad += productoCantidad
+        carrito.push(producto)
+    } else {
+        productoRepetido.cantidad += productoCantidad
     }
-    while (seguirComprando)
+};
 
-    return totalCompra; 
+const eliminarProductoCarrito = (nombreProductoAEliminar) => {
+    carrito.forEach((producto, index) => {
+        if (producto.nombre.toLowerCase() === nombreProductoAEliminar.toLowerCase()) {
+            if (producto.cantidad > 1) {
+                producto.cantidad--
+            } else {
+                carrito.splice(index, 1)
+            }
+        }
+    })
+    confirmarCompra()
+};
+
+const confirmarCompra = () => {
+    const listaProductos = carrito.map(producto => {
+        return '- '+producto.nombre+' | Cantidad: '+producto.cantidad
+    })
+
+    const isCheckout = confirm('Checkout: '
+        +'\n\n'+listaProductos.join('\n')
+        +'\n\nPara continuar presione "Aceptar" sino "Cancelar" para eliminar un producto del carrito'
+    )
+
+    if (isCheckout) {
+        finalizarCompra(listaProductos)
+    } else {
+        const nombreProductoAEliminar = prompt('Ingrese el nombre del producto a eliminar:')
+        eliminarProductoCarrito(nombreProductoAEliminar)
+    }
+};
+
+const finalizarCompra = (listaProductos) => {
+    const cantidadTotal = carrito.reduce((acc, item) => acc + item.cantidad, 0)
+    const precioTotal = carrito.reduce((acc, item) => acc + (item.cantidad * item.precio), 0)
+    alert('Detalle de su compra: '
+        +'\n\n'+listaProductos.join('\n')
+        +'\n\nTotal de productos: '+cantidadTotal
+        +'\n\nEl total de su compra es: '+precioTotal
+        +'\n\nGracias por su compra!'
+    )
+};
+
+const comprar = () => {
+    const productosBaratos = confirm('¿Querés ordenar la lista de productos del mas barato al mas caro?')
+
+    if (productosBaratos) {
+        ordenarMenorMayor()
+    } else {
+        ordenarMayorMenor()
+    }
 };
 
 
-function validarCantidad(cantidad) {
-    while (Number.isNaN(cantidad) || cantidad === 0) {
-        if (cantidad !== 0) {
-            alert("Por favor indique la cantidad");
-        }
-        else {
-            alert("Por favor indique un numero distinto de cero");
-        }
-        cantidad = parseInt(prompt("Indique cantidad"));
-        return cantidad;
-    }
-
-};
-
-function calcularCantidadCuotas(){
-    let cuotas = 0;
-    let elegirCuotas = false;
-
-    elegirCuotas = confirm ("Podes pagar en cuotas sin interes!!")
-
-    if (elegirCuotas){
-        cuotas = parseInt (prompt("En cuantas cuotas queres pagar?"));
-        if(cuotas===0){
-            cuotas=1;
-        } else if (Number.isNaN(cuotas)){
-            calcularCantidadCuotas();
-        }
-    }
-    else {
-        cuotas = 1;
-    }
-    return cuotas;
-}
-
-
-function calcularTotalAPagar (totalCompra, cuotas){
-let valorCuota = totalCompra / cuotas;
-alert ("El total a pagar es $"+totalCompra+" en "+cuotas+" cuotas de $"+valorCuota )
-}
-
-alert ("Bienvenidos")
-const totalCompra = comprarProductos ();
-const cuotas = calcularCantidadCuotas ();
-const valorCuota = 
-
-calcularTotalAPagar (totalCompra, cuotas)
+comprar()
